@@ -1,0 +1,113 @@
+-- fullfill skipped  post code
+update tbl_orders 
+set postal_code = 05401
+where postal_code is null
+
+-- insert shipping
+insert into shipping
+select 
+row_number() over(),
+ship_mode 
+from (select distinct ship_mode from tbl_orders) a;
+
+-- insert segments
+insert into segments 
+select 
+row_number() over(),
+segment 
+from (select distinct segment from tbl_orders) a;
+
+-- insert customers
+insert into customers 
+select
+	customer_id,
+	customer_name 	
+from (select distinct customer_id, customer_name from tbl_orders) a;
+
+-- insert address
+-- первый вариант
+with CTE as (
+		select 
+		country ,
+		region ,
+		state,
+		city ,
+		postal_code,
+		row_number() over(partition by country,region,state,city,postal_code) as dublicate
+		from tbl_orders to2 )
+insert into address 
+select
+	row_number() over(),
+	country ,
+	region ,
+	state,
+	city ,
+	postal_code
+from cte
+where dublicate = 1
+-- запросы разделить
+-- второй вариант
+insert into address 
+select
+	row_number() over(),
+	country ,
+	region ,
+	state,
+	city ,
+	postal_code
+from (select distinct country,	region,	state, city,postal_code from tbl_orders to3) as a 
+
+-- insert products
+-- первый вариант
+with cte as (
+	select
+	category ,
+	subcategory ,
+	product_name, 
+	row_number() over(partition by category, subcategory, product_name) as dublicate
+	from tbl_orders to2 )
+insert into products 
+select
+	row_number() over(),
+	category,
+	subcategory,
+	product_name  
+from cte
+where dublicate = 1
+-- второй вариант
+insert into products 
+select 
+row_number() over(),
+*
+from (
+select distinct category, subcategory, product_name from tbl_orders to2  ) a
+
+-- insert calendar
+insert into calendar 
+select distinct order_date , ship_date from tbl_orders 
+
+-- insert sales
+insert into sales 
+select
+row_number() over(),
+o.order_id,
+order_date,
+ship_date,
+s.shipping_mode_id,
+s2.segment_id,
+c.customer_id,
+p.product_id,
+a.geo_id,
+sales,
+quantity,
+discount,
+profit,
+retr.returned 
+from tbl_orders o 
+inner join shipping s on s.shiping_mode = o.ship_mode 
+inner join segments s2 on s2.segment = o.segment 
+inner join customers c on c.customer_name = o.customer_name 
+inner join products p on p.product_name = o.product_name 
+inner join address a on a.postal_code = o.postal_code and a.city = o.city 
+left join (select distinct * from tbl_returns) as retr on o.order_id = retr.order_id
+ 
