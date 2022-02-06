@@ -58,18 +58,18 @@ CREATE TABLE sales
 (
  row_id           int NOT NULL,
  order_id         varchar(50) NOT NULL,
+ order_date       date NOT NULL,
+ ship_date        date NOT NULL,
  shipping_mode_id int NOT NULL,
  segment_id       int NOT NULL,
- customer_id      int NOT NULL,
+ customer_id      varchar(50) NOT NULL,
  product_id       int NOT NULL,
  geo_id           int NOT NULL,
- order_date       date NOT NULL,
  sales            numeric(9,4) NOT NULL,
  quantity         int NOT NULL,
  discount         numeric(4,2) NULL,
  profit           numeric(21,16) NOT NULL,
  reterned         varchar(5) NOT NULL,
- ship_date        date NOT NULL,
  CONSTRAINT PK_13 PRIMARY KEY ( row_id ),
  CONSTRAINT FK_22 FOREIGN KEY ( order_date, ship_date ) REFERENCES calendar ( order_date, ship_date ),
  CONSTRAINT FK_67 FOREIGN KEY ( product_id ) REFERENCES products ( product_id ),
@@ -109,7 +109,4 @@ CREATE INDEX FK_81 ON sales
 (
  shipping_mode_id
 );
-
-
-
 
