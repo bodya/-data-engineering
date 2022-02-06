@@ -1,3 +1,10 @@
+CREATE TABLE segments
+(
+ segment_id int NOT NULL,
+ segment    varchar(50) NOT NULL,
+ CONSTRAINT PK_46 PRIMARY KEY ( segment_id )
+);
+
 CREATE TABLE shipping
 (
  shipping_mode_id int NOT NULL,
@@ -101,13 +108,6 @@ CREATE INDEX FK_81 ON sales
  shipping_mode_id
 );
 
-
-CREATE TABLE segments
-(
- segment_id int NOT NULL,
- segment    varchar(50) NOT NULL,
- CONSTRAINT PK_46 PRIMARY KEY ( segment_id )
-);
 
 
 
