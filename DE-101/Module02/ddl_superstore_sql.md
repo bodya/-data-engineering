@@ -1,4 +1,4 @@
-'''sql
+```sql
 CREATE TABLE segments
 (
  segment_id int NOT NULL,
@@ -110,5 +110,5 @@ CREATE INDEX FK_81 ON sales
 (
  shipping_mode_id
 );
-'''
+```
 
